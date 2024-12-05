@@ -1,11 +1,6 @@
 import Foundation
 
-let file = FileManager.default.currentDirectoryPath + "/Day2/input.txt"
-let contents = try? String(contentsOfFile: file, encoding: .utf8)
-
-guard let contents = contents else {
-    exit(1)
-}
+let contents = input(forDay: 2)
 
 func partOne() -> Int {
     return contents.components(separatedBy: "\n").reduce(0) { carry, line in
