@@ -35,7 +35,7 @@ func partTwo() -> Int {
                 continue
             }
             
-            if countMasInX(in: lines, x: x, y: y) {
+            if hasMasInX(in: lines, x: x, y: y) {
                 total += 1
             }
         }
@@ -108,7 +108,7 @@ func countXmas(in arr: [[String]], x: Int, y: Int) -> Int {
     return count
 }
 
-func countMasInX(in arr: [[String]], x: Int, y: Int) -> Bool {
+func hasMasInX(in arr: [[String]], x: Int, y: Int) -> Bool {
     // Same deal as part one but search for either direction of MAS in both diagonals
     if ((arr[y - 1][x - 1] == "M" && arr[y + 1][x + 1] == "S") || (arr[y - 1][x - 1] == "S" && arr[y + 1][x + 1] == "M"))
         && ((arr[y + 1][x - 1] == "M" && arr[y - 1][x + 1] == "S") || (arr[y + 1][x - 1] == "S" && arr[y - 1][x + 1] == "M")) {
