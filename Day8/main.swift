@@ -1,8 +1,11 @@
 import Foundation
 
 // Convert to 2D array
-let map = input(forDay: 8).split(separator: "\n").map { $0.split(separator: "").map { String($0)} }
+let map = input(forDay: 8)
+    .split(separator: "\n")
+    .map { $0.split(separator: "").map { String($0) } }
 
+// We need unique locations so I'm just going to repeatedly slap stuff into a Set and let Swift do that for me
 struct Antinode: Hashable {
     let x: Int
     let y: Int
@@ -14,8 +17,8 @@ let maxX = map[0].count - 1
 let maxY = map.count - 1
 
 // Group up the locations of all frequencies
-let frequencies = map.enumerated().reduce(into: [String: [Coordinate]]()) { locations, indexLine in
-    let (y, line) = indexLine
+let frequencies = map.enumerated().reduce(into: [String: [Coordinate]]()) { locations, indexedLine in
+    let (y, line) = indexedLine
     for (x, char) in line.enumerated() {
         if char == "." {
             continue
@@ -60,10 +63,6 @@ func partTwo() -> Int {
     var antinodes = Set<Antinode>()
     
     for (_, locations) in frequencies {
-        if locations.count == 1 {
-            continue
-        }
-        
         for location in locations {
             for otherLocation in locations {
                 if location == otherLocation {
