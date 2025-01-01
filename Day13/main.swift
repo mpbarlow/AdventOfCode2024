@@ -62,7 +62,7 @@ func solve(_ input: Input) -> (a: Double, b: Double)? {
     let a = ((input.bPress.y * input.prize.x) - (input.bPress.x * input.prize.y))
         / ((input.bPress.y * input.aPress.x) - (input.bPress.x * input.aPress.y))
     
-    let b = (input.prize.x - (a * input.aPress.x)) / (input.bPress.x)
+    let b = (input.prize.x - (a * input.aPress.x)) / input.bPress.x
     
     // Non-integer solution == no valid solution
     if floor(a) != a || floor(b) != b {

@@ -20,6 +20,7 @@
 		C9FB52A42D184D60001B9694 /* input.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F650CD2D0244F100B1D4E6 /* input.swift */; };
 		C9FB52B12D187571001B9694 /* input.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F650CD2D0244F100B1D4E6 /* input.swift */; };
 		C9FB52BE2D21937C001B9694 /* input.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F650CD2D0244F100B1D4E6 /* input.swift */; };
+		C9FB52CB2D2595F1001B9694 /* input.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F650CD2D0244F100B1D4E6 /* input.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -140,6 +141,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		C9FB52C22D2595EA001B9694 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -158,6 +168,7 @@
 		C9FB529D2D184D56001B9694 /* Day11 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Day11; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9FB52AA2D187569001B9694 /* Day12 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Day12; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9FB52B72D219374001B9694 /* Day13 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Day13; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9FB52C42D2595EA001B9694 /* Day14 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Day14; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -224,6 +235,11 @@
 		C9FB52B82D219374001B9694 /* Day13 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Day13;
+			sourceTree = "<group>";
+		};
+		C9FB52C52D2595EB001B9694 /* Day14 */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Day14;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -320,6 +336,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9FB52C12D2595EA001B9694 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -340,6 +363,7 @@
 				C9FB529E2D184D56001B9694 /* Day11 */,
 				C9FB52AB2D187569001B9694 /* Day12 */,
 				C9FB52B82D219374001B9694 /* Day13 */,
+				C9FB52C52D2595EB001B9694 /* Day14 */,
 				C91834AF2CFE63B900ED9F4F /* Products */,
 				C91834B72CFE6E7E00ED9F4F /* .gitignore */,
 			);
@@ -361,6 +385,7 @@
 				C9FB529D2D184D56001B9694 /* Day11 */,
 				C9FB52AA2D187569001B9694 /* Day12 */,
 				C9FB52B72D219374001B9694 /* Day13 */,
+				C9FB52C42D2595EA001B9694 /* Day14 */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -654,6 +679,28 @@
 			productReference = C9FB52B72D219374001B9694 /* Day13 */;
 			productType = "com.apple.product-type.tool";
 		};
+		C9FB52C32D2595EA001B9694 /* Day14 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9FB52C82D2595EB001B9694 /* Build configuration list for PBXNativeTarget "Day14" */;
+			buildPhases = (
+				C9FB52C02D2595EA001B9694 /* Sources */,
+				C9FB52C12D2595EA001B9694 /* Frameworks */,
+				C9FB52C22D2595EA001B9694 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C9FB52C52D2595EB001B9694 /* Day14 */,
+			);
+			name = Day14;
+			packageProductDependencies = (
+			);
+			productName = Day14;
+			productReference = C9FB52C42D2595EA001B9694 /* Day14 */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -703,6 +750,9 @@
 					C9FB52B62D219374001B9694 = {
 						CreatedOnToolsVersion = 16.2;
 					};
+					C9FB52C32D2595EA001B9694 = {
+						CreatedOnToolsVersion = 16.2;
+					};
 				};
 			};
 			buildConfigurationList = C91834A62CFE625000ED9F4F /* Build configuration list for PBXProject "AdventOfCode2024" */;
@@ -732,6 +782,7 @@
 				C9FB529C2D184D56001B9694 /* Day11 */,
 				C9FB52A92D187569001B9694 /* Day12 */,
 				C9FB52B62D219374001B9694 /* Day13 */,
+				C9FB52C32D2595EA001B9694 /* Day14 */,
 			);
 		};
 /* End PBXProject section */
@@ -838,6 +889,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9FB52BE2D21937C001B9694 /* input.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9FB52C02D2595EA001B9694 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9FB52CB2D2595F1001B9694 /* input.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2290,6 +2349,80 @@
 			};
 			name = Release;
 		};
+		C9FB52C92D2595EB001B9694 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C9FB52CA2D2595EB001B9694 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2415,6 +2548,15 @@
 			buildConfigurations = (
 				C9FB52BC2D219374001B9694 /* Debug */,
 				C9FB52BD2D219374001B9694 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C9FB52C82D2595EB001B9694 /* Build configuration list for PBXNativeTarget "Day14" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9FB52C92D2595EB001B9694 /* Debug */,
+				C9FB52CA2D2595EB001B9694 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
