@@ -1,45 +1,53 @@
 import Foundation
 
-typealias Coordinate = (x: Int, y: Int)
-
-var map = input(forDay: 16)
-    .split(separator: "\n")
-    .map {
-        $0.split(separator: "").map { String($0) }
-    }
+struct Coordinate: Equatable, Hashable {
+    let x: Int
+    let y: Int
+}
 
 enum Direction: CaseIterable {
     case north, south, east, west
     
     var vector: Coordinate {
         switch self {
-        case .north:    (0, -1)
-        case .south:    (0, 1)
-        case .west:     (-1, 0)
-        case .east:     (1, 0)
+        case .north:    Coordinate(x: 0, y: -1)
+        case .south:    Coordinate(x: 0, y: 1)
+        case .west:     Coordinate(x: -1, y: 0)
+        case .east:     Coordinate(x: 1, y: 0)
         }
     }
 }
 
-struct Vertex: Hashable, Equatable {
+struct Vertex: Hashable {
     let x: Int
     let y: Int
+    let facing: Direction
+    
+    var coordinate: Coordinate {
+        Coordinate(x: self.x, y: self.y)
+    }
 }
 
 struct Edge: Hashable {
     let from: Vertex
     let to: Vertex
-    let direction: Direction
+    let cost: Int
 }
 
 struct Graph {
     private(set) var vertices = Set<Vertex>()
     private(set) var edges = Set<Edge>()
     
-    mutating func addEdge(from v1: Vertex, to v2: Vertex, toThe direction: Direction) {
+    init(vertices: [Vertex]) {
+        for v in vertices {
+            self.vertices.insert(v)
+        }
+    }
+    
+    mutating func addEdge(from v1: Vertex, to v2: Vertex) {
         vertices.insert(v1)
         vertices.insert(v2)
-        edges.insert(Edge(from: v1, to: v2, direction: direction))
+        edges.insert(Edge(from: v1, to: v2, cost: v1.facing == v2.facing ? 1 : 1001))
     }
     
     func edges(from vertex: Vertex) -> [Edge] {
@@ -47,72 +55,74 @@ struct Graph {
     }
 }
 
-func buildGraph() -> Graph {
-    var graph = Graph()
-    
-    // Don't both processing the outside walls
-    for y in 1..<map.count - 1 {
-        for x in 1..<map[y].count - 1 {
-            if map[y][x] == "#" {
-                // Can't be on a wall
-                continue
-            }
+let map = input(forDay: 16)
+    .split(separator: "\n")
+    .map {
+        $0.split(separator: "").map { String($0) }
+    }
 
-            let v1 = Vertex(x: x, y: y)
+// Adds the neighbours of the provided vertext to the graph, and returns what it added
+func populateNeighbours(in graph: inout Graph, from vertex: Vertex) -> Set<Vertex> {
+    var added = Set<Vertex>()
 
-            for direction in Direction.allCases {
-                let v2 = Vertex(x: x + direction.vector.x, y: y + direction.vector.y)
-                
-                if map[v2.y][v2.x] == "#" {
-                    continue
-                }
-                
-                graph.addEdge(from: v1, to: v2, toThe: direction)
-            }
+    for direction in Direction.allCases {
+        let nextVertex = Vertex(x: vertex.x + direction.vector.x, y: vertex.y + direction.vector.y, facing: direction)
+        if map[nextVertex.y][nextVertex.x] == "#" {
+            continue
         }
+        
+        graph.addEdge(from: vertex, to: nextVertex)
+        added.insert(nextVertex)
     }
     
-    return graph
+    return added
 }
 
-func dijkstra(_ graph: Graph, startingFrom source: Vertex) -> (distances: [Vertex: Int], paths: [Vertex: [Vertex?]]) {
+func dijkstra(startingFrom source: Vertex, seeking target: Coordinate) -> (
+    distances: [Vertex: Int],
+    paths: [Vertex: [Vertex?]]
+) {
+    var graph = Graph(vertices: [source])
+    
     var distances = [Vertex: Int]()
     var previous = [Vertex: [Vertex?]]()
-    // We need to track the direction we're facing on the current shortest path(s) to each vertex to know whether a
-    // neighbour visit will require a turn
-    var directions = [Vertex: [Direction]]()
     
+    var visited = Set<Vertex>()
     var queue = graph.vertices
-    
-    for v in queue {
-        distances[v] = Int.max
-        previous[v] = []
-        directions[v] = []
-    }
     
     distances[source] = 0
     previous[source] = [nil]
-    directions[source] = [.east]
     
     while !queue.isEmpty {
         let v = queue.min { distances[$0]! < distances[$1]! }!
+        if v.coordinate == target {
+            break
+        }
+        
+        visited.insert(v)
         queue.remove(v)
         
+        // Lazily populate the neighbours for the current vertex and add them to the queue
+        // Skip anything we've already visited to avoid loops, and anything already queued but not yet processed as
+        // we might clobber a current lowest distance
+        for newVertex in populateNeighbours(in: &graph, from: v).subtracting(visited).subtracting(queue) {
+            queue.insert(newVertex)
+            
+            distances[newVertex] = Int.max
+            previous[newVertex] = nil
+        }
+        
+        // Slightly modified Dijkstra to support returning all paths
         for edge in graph.edges(from: v) {
-            // Modified Dijkstra to track all equal shortest paths
-            for i in 0..<previous[v]!.count {
-                let distanceNext = distances[v]! + 1 + (directions[v]![i] == edge.direction ? 0 : 1000)
-                
-                if distanceNext < distances[edge.to]! {
-                    // If we find a new shortest, still disregard the previous as per normal Dijkstra...
-                    distances[edge.to] = distanceNext
-                    previous[edge.to] = [v]
-                    directions[edge.to] = [edge.direction]
-                } else if distanceNext == distances[edge.to]! {
-                    // ...but if we find a new joint shortest, add it to the list instead
-                    previous[edge.to]!.append(v)
-                    directions[edge.to]!.append(edge.direction)
-                }
+            let distanceNext = distances[v]! + edge.cost
+            
+            if distanceNext < distances[edge.to]! {
+                // If we find a new shortest, still disregard the previous as per normal Dijkstra...
+                distances[edge.to] = distanceNext
+                previous[edge.to] = [v]
+            } else if distanceNext == distances[edge.to] {
+                // ...but if we find a new joint shortest, add it to the list
+                previous[edge.to]!.append(v)
             }
         }
     }
@@ -121,53 +131,53 @@ func dijkstra(_ graph: Graph, startingFrom source: Vertex) -> (distances: [Verte
 }
 
 let (start, end) = {
-    var start: Vertex = Vertex(x: 0, y: 0)
-    var end: Vertex = Vertex(x: 0, y: 0)
+    var start: Coordinate? = nil
+    var end: Coordinate? = nil
     
     for y in 0..<map.count {
         for x in 0..<map[0].count {
             switch map[y][x] {
-            case "S": start = Vertex(x: x, y: y)
-            case "E": end = Vertex(x: x, y: y)
+            case "S": start = Coordinate(x: x, y: y)
+            case "E": end = Coordinate(x: x, y: y)
             default: continue
             }
         }
     }
     
-    return (start, end)
+    return (start!, end!)
 }()
 
-let (distances, paths) = dijkstra(buildGraph(), startingFrom: start)
+let (distances, paths) = dijkstra(startingFrom: Vertex(x: start.x, y: start.y, facing: .east), seeking: end)
 
-func partOne() -> Int {
-    return distances[end]!
+// Given each path into the end position is a different vertex, we don't actually know what it is for any given input
+let endVertex = distances.reduce(Vertex(x: -1, y: -1, facing: .north)) { carry, kv in
+    kv.key.coordinate == end && kv.value < distances[carry, default: Int.max] ? kv.key : carry
 }
 
-// Return the set of unique vertices across all paths back to the start
-func enumerateVertices(across paths: [Vertex: [Vertex?]], from vertex: Vertex) -> Set<Vertex> {
-    var vertices = Set<Vertex>()
-    vertices.insert(vertex)
-    
-    map[vertex.y][vertex.x] = "X"
+func partOne() -> Int {
+    return distances[endVertex]!
+}
+
+// Return the set of unique coordinates across all paths back to the start
+func enumerateCoordinates(from vertex: Vertex) -> Set<Coordinate> {
+    var coords = Set<Coordinate>()
+    coords.insert(vertex.coordinate)
     
     for prevVertex in paths[vertex]! {
+        // When we hit nil we've got back to the start
         guard let prevVertex = prevVertex else {
             break
         }
         
-        vertices = vertices.union(enumerateVertices(across: paths, from: prevVertex))
+        coords = coords.union(enumerateCoordinates(from: prevVertex))
     }
     
-    return vertices
+    return coords
 }
 
 func partTwo() -> Int {
-    return enumerateVertices(across: paths, from: end).count
+    return enumerateCoordinates(from: endVertex).count
 }
 
 print(partOne())
 print(partTwo())
-
-for line in map {
-    print(line.joined())
-}
