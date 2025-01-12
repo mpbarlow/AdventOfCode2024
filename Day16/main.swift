@@ -2,7 +2,7 @@ import Foundation
 
 typealias Coordinate = (x: Int, y: Int)
 
-let map = input(forDay: 16)
+var map = input(forDay: 16)
     .split(separator: "\n")
     .map {
         $0.split(separator: "").map { String($0) }
@@ -50,7 +50,7 @@ struct Graph {
 func buildGraph() -> Graph {
     var graph = Graph()
     
-    // Don't both processing the edge walls
+    // Don't both processing the outside walls
     for y in 1..<map.count - 1 {
         for x in 1..<map[y].count - 1 {
             if map[y][x] == "#" {
@@ -75,35 +75,44 @@ func buildGraph() -> Graph {
     return graph
 }
 
-func dijkstra(_ graph: Graph, startingFrom source: Vertex) -> (distances: [Vertex: Int], paths: [Vertex: Vertex?]) {
+func dijkstra(_ graph: Graph, startingFrom source: Vertex) -> (distances: [Vertex: Int], paths: [Vertex: [Vertex?]]) {
     var distances = [Vertex: Int]()
-    var previous = [Vertex: Vertex?]()
-    // We need to track the direction we're facing on the current shortest path to each vertex to know whether a
+    var previous = [Vertex: [Vertex?]]()
+    // We need to track the direction we're facing on the current shortest path(s) to each vertex to know whether a
     // neighbour visit will require a turn
-    var directions = [Vertex: Direction?]()
+    var directions = [Vertex: [Direction]]()
     
     var queue = graph.vertices
     
     for v in queue {
         distances[v] = Int.max
-        previous[v] = nil
-        directions[v] = nil
+        previous[v] = []
+        directions[v] = []
     }
     
     distances[source] = 0
-    directions[source] = .east
+    previous[source] = [nil]
+    directions[source] = [.east]
     
     while !queue.isEmpty {
         let v = queue.min { distances[$0]! < distances[$1]! }!
         queue.remove(v)
         
         for edge in graph.edges(from: v) {
-            let distanceNext = distances[v]! + 1 + (directions[v] == edge.direction ? 0 : 1000)
-
-            if distanceNext < distances[edge.to]! {
-                distances[edge.to] = distanceNext
-                previous[edge.to] = v
-                directions[edge.to] = edge.direction
+            // Modified Dijkstra to track all equal shortest paths
+            for i in 0..<previous[v]!.count {
+                let distanceNext = distances[v]! + 1 + (directions[v]![i] == edge.direction ? 0 : 1000)
+                
+                if distanceNext < distances[edge.to]! {
+                    // If we find a new shortest, still disregard the previous as per normal Dijkstra...
+                    distances[edge.to] = distanceNext
+                    previous[edge.to] = [v]
+                    directions[edge.to] = [edge.direction]
+                } else if distanceNext == distances[edge.to]! {
+                    // ...but if we find a new joint shortest, add it to the list instead
+                    previous[edge.to]!.append(v)
+                    directions[edge.to]!.append(edge.direction)
+                }
             }
         }
     }
@@ -128,11 +137,37 @@ let (start, end) = {
     return (start, end)
 }()
 
-func partOne() -> Int {
-    let (distances, _) = dijkstra(buildGraph(), startingFrom: start)
+let (distances, paths) = dijkstra(buildGraph(), startingFrom: start)
 
+func partOne() -> Int {
     return distances[end]!
 }
 
-// 75416
+// Return the set of unique vertices across all paths back to the start
+func enumerateVertices(across paths: [Vertex: [Vertex?]], from vertex: Vertex) -> Set<Vertex> {
+    var vertices = Set<Vertex>()
+    vertices.insert(vertex)
+    
+    map[vertex.y][vertex.x] = "X"
+    
+    for prevVertex in paths[vertex]! {
+        guard let prevVertex = prevVertex else {
+            break
+        }
+        
+        vertices = vertices.union(enumerateVertices(across: paths, from: prevVertex))
+    }
+    
+    return vertices
+}
+
+func partTwo() -> Int {
+    return enumerateVertices(across: paths, from: end).count
+}
+
 print(partOne())
+print(partTwo())
+
+for line in map {
+    print(line.joined())
+}
