@@ -29,29 +29,23 @@ struct Vertex: Hashable {
 }
 
 struct Edge: Hashable {
-    let from: Vertex
     let to: Vertex
     let cost: Int
 }
 
 struct Graph {
-    private(set) var vertices = Set<Vertex>()
-    private(set) var edges = Set<Edge>()
-    
-    init(vertices: [Vertex]) {
-        for v in vertices {
-            self.vertices.insert(v)
-        }
-    }
+    private(set) var edges = [Vertex: [Edge]]()
     
     mutating func addEdge(from v1: Vertex, to v2: Vertex) {
-        vertices.insert(v1)
-        vertices.insert(v2)
-        edges.insert(Edge(from: v1, to: v2, cost: v1.facing == v2.facing ? 1 : 1001))
+        if !edges.keys.contains(v1) {
+            edges[v1] = [Edge]()
+        }
+
+        edges[v1]!.append(Edge(to: v2, cost: v1.facing == v2.facing ? 1 : 1001))
     }
     
     func edges(from vertex: Vertex) -> [Edge] {
-        edges.filter { $0.from == vertex }
+        edges[vertex, default: []]
     }
 }
 
@@ -82,13 +76,13 @@ func dijkstra(startingFrom source: Vertex, seeking target: Coordinate) -> (
     distances: [Vertex: Int],
     paths: [Vertex: [Vertex?]]
 ) {
-    var graph = Graph(vertices: [source])
+    var graph = Graph()
     
     var distances = [Vertex: Int]()
     var previous = [Vertex: [Vertex?]]()
     
     var visited = Set<Vertex>()
-    var queue = graph.vertices
+    var queue = Set<Vertex>([source])
     
     distances[source] = 0
     previous[source] = [nil]
@@ -103,9 +97,13 @@ func dijkstra(startingFrom source: Vertex, seeking target: Coordinate) -> (
         queue.remove(v)
         
         // Lazily populate the neighbours for the current vertex and add them to the queue
-        // Skip anything we've already visited to avoid loops, and anything already queued but not yet processed as
-        // we might clobber a current lowest distance
-        for newVertex in populateNeighbours(in: &graph, from: v).subtracting(visited).subtracting(queue) {
+        for newVertex in populateNeighbours(in: &graph, from: v) {
+            // Skip anything we've already visited to avoid loops, and anything already queued but not yet processed as
+            // we might clobber a current lowest distance
+            if visited.contains(newVertex) || queue.contains(newVertex) {
+                continue
+            }
+            
             queue.insert(newVertex)
             
             distances[newVertex] = Int.max

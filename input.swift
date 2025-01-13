@@ -5,6 +5,7 @@ func input(forDay day: Int) -> String {
     let contents = try? String(contentsOfFile: file, encoding: .utf8)
 
     guard let contents = contents else {
+        print("Could not load input file")
         exit(1)
     }
 
