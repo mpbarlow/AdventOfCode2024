@@ -29,49 +29,32 @@ func partOne() -> Int {
     return total
 }
 
-// This is slow as hell, takes about 2 mins to run but...eh
 func partTwo() -> Int {
-    // Cursed dict. Maps:
-    // Initial secret: sequence of changes: the price that yields
-    var seen = [Int: [[Int]: Int]]()
+    // Map the first occurence of sequences for each monkey onto a running total of how many bananas it yields
+    var seen = [[Int]: Int]()
     
     for number in numbers {
-        seen[number] = [[Int]: Int]()
-        
         var secret = number
+        
         var sequence = [Int]()
+        var seenOnCurrent = Set<[Int]>()
         
         for _ in 0..<2000 {
             let oldPrice = secret % 10
             secret = nextSecretNumber(from: secret)
             let price = secret % 10
             
-            sequence.append(price - oldPrice)
-            
-            let last4 = Array(sequence.suffix(4))
-            if last4.count < 4 || seen[number]![last4] != nil {
+            sequence = sequence.suffix(3) + [price - oldPrice]
+            if sequence.count < 4 || seenOnCurrent.contains(sequence) {
                 continue
             }
             
-            seen[number]![last4] = price
+            seenOnCurrent.insert(sequence)
+            seen[sequence, default: 0] += price
         }
     }
     
-    var mostBananas = -1
-    
-    for sequence in Set(seen.mapValues { $0.keys }.values.reduce([], +)) {
-        var bananas = 0
-        
-        for number in numbers {
-            bananas += seen[number]![sequence, default: 0]
-        }
-        
-        if bananas > mostBananas {
-            mostBananas = bananas
-        }
-    }
-    
-    return mostBananas
+    return seen.values.max()!
 }
 
 print(partOne())
