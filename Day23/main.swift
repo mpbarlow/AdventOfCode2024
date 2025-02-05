@@ -7,11 +7,30 @@ struct Graph {
         nodes[node1, default: Set<String>()].insert(node2)
         nodes[node2, default: Set<String>()].insert(node1)
     }
+    
+    // Return true if all elements of the input set are interconnected by repeatedly removing elements _not_ common to
+    // each and seeing if any were removed.
+    func isInterconnected(_ input: Set<String>) -> Bool {
+        var interconnected = input
+        
+        for item in input {
+            var reciprocalConnections = self.nodes[item]!
+            reciprocalConnections.insert(item)
+            
+            interconnected = interconnected.intersection(reciprocalConnections)
+            
+            if interconnected.count < input.count {
+                return false
+            }
+        }
+        
+        return true
+    }
 }
 
 extension Set where Element == String {
     func combinations(of size: Int) -> [Set<String>] {
-        if self.count < size {
+        guard self.count >= size else {
             return []
         }
         
@@ -59,32 +78,13 @@ outer:
         // I had a much more primitive way of doing this before part two where I was checking individual triplets of
         // nodes. It worked fine, but this is much nicer.
         for combo in lan.combinations(of: 3) {
-            if isInterconnected(combo) && combo.contains(where: { $0.first == "t" }) {
+            if graph.isInterconnected(combo) && combo.contains(where: { $0.first == "t" }) {
                 lans.insert(combo)
             }
         }
     }
     
     return lans.count
-}
-
-// Return true if all elements of the input set are interconnected by repeatedly removing elements _not_ common to each
-// and seeing if any were removed.
-func isInterconnected(_ input: Set<String>) -> Bool {
-    var interconnected = input
-    
-    for item in input {
-        var reciprocalConnections = graph.nodes[item]!
-        reciprocalConnections.insert(item)
-        
-        interconnected = interconnected.intersection(reciprocalConnections)
-        
-        if interconnected.count < input.count {
-            return false
-        }
-    }
-    
-    return true
 }
 
 func partTwo() -> String {
@@ -104,7 +104,7 @@ outer:
             for combo in lan.combinations(of: i) {
                 // We're starting largest combo first, so as soon as we find one we know it's the largest across all
                 // nodes in this network
-                if isInterconnected(combo) {
+                if graph.isInterconnected(combo) {
                     largestLan = combo
                     continue outer
                 }
